@@ -54,6 +54,10 @@ AppleAppBundleFinder/
 - 抖音: 1142110895
 - 淘宝: 387682726
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?ref=Snake-Konginchrist/apple-app-bundle-finder&type=Date)](https://star-history.com/#Snake-Konginchrist/apple-app-bundle-finder&Date)
+
 ## 许可证
 
 MIT License
