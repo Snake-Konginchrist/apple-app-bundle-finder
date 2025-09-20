@@ -8,7 +8,6 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QLabel, QPushButton, QGroupBox, QApplication
 )
-from PySide6.QtGui import QFont
 
 from models.app_info import AppInfo
 from utils.helpers import format_number, load_image_from_url
@@ -20,6 +19,7 @@ class InfoPanelWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.current_app_info = None
+        self.current_icon = None  # 保存原始图标用于重新缩放
         self.init_ui()
     
     def init_ui(self):
@@ -47,14 +47,16 @@ class InfoPanelWidget(QWidget):
             }
         """)
         basic_layout = QGridLayout(basic_group)
-        basic_layout.setSpacing(8)
-        # 设置列拉伸比例：标签列最小，值列可扩展
-        basic_layout.setColumnStretch(1, 0)  # 标签列不拉伸
-        basic_layout.setColumnStretch(2, 1)    # 值列可拉伸
+        basic_layout.setSpacing(8)  # 增加间距，避免字体截断
+        basic_layout.setVerticalSpacing(10)  # 增加垂直间距
+        # 设置列拉伸比例：标签列和值列都需要足够空间
+        basic_layout.setColumnStretch(1, 1)  # 标签列也需要一些空间
+        basic_layout.setColumnStretch(2, 2)    # 值列获得更多空间
         
         # 应用图标
         self.app_icon_label = QLabel()
-        self.app_icon_label.setFixedSize(100, 100)
+        self.app_icon_label.setMinimumSize(80, 80)
+        self.app_icon_label.setMaximumSize(120, 120)
         self.app_icon_label.setAlignment(Qt.AlignCenter)
         self.app_icon_label.setStyleSheet("""
             border: 2px solid #e0e0e0;
@@ -66,39 +68,41 @@ class InfoPanelWidget(QWidget):
         self.app_icon_label.setText("暂无图标")
         basic_layout.addWidget(self.app_icon_label, 0, 0, 3, 1)
         
-        # 应用名称 - 现代化标签样式
+        # 应用名称 - 优化字体显示，避免截断
         name_label = QLabel("应用名称:")
-        name_label.setStyleSheet("font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;")
+        name_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        name_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        name_label.setStyleSheet("font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;")
         basic_layout.addWidget(name_label, 0, 1)
         
         self.app_name_label = QLabel("未查询")
         self.app_name_label.setWordWrap(True)
         self.app_name_label.setMinimumWidth(200)  # 设置最小宽度确保换行
-        font = QFont()
-        font.setBold(True)
-        font.setPointSize(16)
-        self.app_name_label.setFont(font)
-        self.app_name_label.setStyleSheet("color: #2c3e50;")
+        self.app_name_label.setStyleSheet("color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;")
         basic_layout.addWidget(self.app_name_label, 0, 2)
         
-        # 开发者 - 现代化标签样式
+        # 开发者 - 优化字体显示，避免截断
         dev_label = QLabel("开发者:")
-        dev_label.setStyleSheet("font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;")
+        dev_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        dev_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        dev_label.setStyleSheet("font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;")
         basic_layout.addWidget(dev_label, 1, 1)
         
         self.developer_label = QLabel("未查询")
         self.developer_label.setWordWrap(True)
-        self.developer_label.setStyleSheet("color: #34495e; font-size: 14px;")
+        self.developer_label.setStyleSheet("color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;")
         basic_layout.addWidget(self.developer_label, 1, 2)
         
-        # Bundle ID - 现代化标签样式
+        # Bundle ID - 优化字体显示，避免截断
         bundle_label = QLabel("Bundle ID:")
-        bundle_label.setStyleSheet("font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;")
+        bundle_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        bundle_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        bundle_label.setStyleSheet("font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;")
         basic_layout.addWidget(bundle_label, 2, 1)
         
         self.bundle_id_label = QLabel("未查询")
         self.bundle_id_label.setWordWrap(True)
-        self.bundle_id_label.setStyleSheet("color: #34495e; font-size: 14px;")
+        self.bundle_id_label.setStyleSheet("color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;")
         basic_layout.addWidget(self.bundle_id_label, 2, 2)
         
         layout.addWidget(basic_group)
@@ -109,8 +113,8 @@ class InfoPanelWidget(QWidget):
             QGroupBox {
                 border-radius: 15px;
                 border: 1px solid #e0e0e0;
-                padding: 20px;
-                margin-top: 10px;
+                padding: 15px;
+                margin-top: 5px;
                 font-size: 16px;
                 font-weight: 600;
                 color: #2c3e50;
@@ -122,30 +126,40 @@ class InfoPanelWidget(QWidget):
             }
         """)
         version_layout = QGridLayout(version_group)
-        version_layout.setSpacing(6)
+        version_layout.setSpacing(8)  # 增加间距，避免字体截断
+        version_layout.setVerticalSpacing(10)  # 增加垂直间距
         # 设置列拉伸比例
-        version_layout.setColumnStretch(0, 0)  # 标签列不拉伸
-        version_layout.setColumnStretch(1, 1)    # 值列可拉伸
+        version_layout.setColumnStretch(0, 1)  # 标签列也需要一些空间
+        version_layout.setColumnStretch(1, 2)    # 值列获得更多空间
         
-        version_label_style = "font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;"
-        version_value_style = "color: #34495e; font-size: 14px;"
+        version_label_style = "font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;"
+        version_value_style = "color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;"
         
-        version_layout.addWidget(QLabel("当前版本:"), 0, 0)
-        version_layout.itemAt(version_layout.count() - 1).widget().setStyleSheet(version_label_style)
+        version_label = QLabel("当前版本:")
+        version_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        version_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        version_label.setStyleSheet(version_label_style)
+        version_layout.addWidget(version_label, 0, 0)
         self.version_label = QLabel("未查询")
         self.version_label.setWordWrap(True)
         self.version_label.setStyleSheet(version_value_style)
         version_layout.addWidget(self.version_label, 0, 1)
         
-        version_layout.addWidget(QLabel("发布日期:"), 1, 0)
-        version_layout.itemAt(version_layout.count() - 1).widget().setStyleSheet(version_label_style)
+        release_date_label = QLabel("发布日期:")
+        release_date_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        release_date_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        release_date_label.setStyleSheet(version_label_style)
+        version_layout.addWidget(release_date_label, 1, 0)
         self.release_date_label = QLabel("未查询")
         self.release_date_label.setWordWrap(True)
         self.release_date_label.setStyleSheet(version_value_style)
         version_layout.addWidget(self.release_date_label, 1, 1)
         
-        version_layout.addWidget(QLabel("最低系统:"), 2, 0)
-        version_layout.itemAt(version_layout.count() - 1).widget().setStyleSheet(version_label_style)
+        min_os_label = QLabel("最低系统:")
+        min_os_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        min_os_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        min_os_label.setStyleSheet(version_label_style)
+        version_layout.addWidget(min_os_label, 2, 0)
         self.min_os_label = QLabel("未查询")
         self.min_os_label.setWordWrap(True)
         self.min_os_label.setStyleSheet(version_value_style)
@@ -159,11 +173,12 @@ class InfoPanelWidget(QWidget):
             QGroupBox {
                 border-radius: 15px;
                 border: 1px solid #e0e0e0;
-                padding: 20px;
-                margin-top: 10px;
+                padding: 15px;
+                margin-top: 5px;
                 font-size: 16px;
                 font-weight: 600;
                 color: #2c3e50;
+                min-height: 40px;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
@@ -172,23 +187,30 @@ class InfoPanelWidget(QWidget):
             }
         """)
         rating_layout = QGridLayout(rating_group)
-        rating_layout.setSpacing(6)
+        rating_layout.setSpacing(8)  # 增加间距，避免字体截断
+        rating_layout.setVerticalSpacing(10)  # 增加垂直间距
         # 设置列拉伸比例
-        rating_layout.setColumnStretch(0, 0)  # 标签列不拉伸
-        rating_layout.setColumnStretch(1, 1)    # 值列可拉伸
+        rating_layout.setColumnStretch(0, 1)  # 标签列也需要一些空间
+        rating_layout.setColumnStretch(1, 2)    # 值列获得更多空间
         
-        rating_label_style = "font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;"
-        rating_value_style = "color: #34495e; font-size: 14px;"
+        rating_label_style = "font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;"
+        rating_value_style = "color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;"
         
-        rating_layout.addWidget(QLabel("平均评分:"), 0, 0)
-        rating_layout.itemAt(rating_layout.count() - 1).widget().setStyleSheet(rating_label_style)
+        rating_label = QLabel("平均评分:")
+        rating_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        rating_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        rating_label.setStyleSheet(rating_label_style)
+        rating_layout.addWidget(rating_label, 0, 0)
         self.rating_label = QLabel("未查询")
         self.rating_label.setWordWrap(True)
         self.rating_label.setStyleSheet(rating_value_style)
         rating_layout.addWidget(self.rating_label, 0, 1)
         
-        rating_layout.addWidget(QLabel("评分人数:"), 1, 0)
-        rating_layout.itemAt(rating_layout.count() - 1).widget().setStyleSheet(rating_label_style)
+        rating_count_label = QLabel("评分人数:")
+        rating_count_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        rating_count_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        rating_count_label.setStyleSheet(rating_label_style)
+        rating_layout.addWidget(rating_count_label, 1, 0)
         self.rating_count_label = QLabel("未查询")
         self.rating_count_label.setWordWrap(True)
         self.rating_count_label.setStyleSheet(rating_value_style)
@@ -196,51 +218,60 @@ class InfoPanelWidget(QWidget):
         
         layout.addWidget(rating_group)
         
-        # 其他信息组 - 现代化卡片设计
+        # 其他信息组 - 移除背景色，与版本信息和评分信息保持一致
         other_group = QGroupBox("其他信息")
         other_group.setStyleSheet("""
             QGroupBox {
-                background-color: #ffffff;
                 border-radius: 15px;
                 border: 1px solid #e0e0e0;
-                padding: 20px;
-                margin-top: 10px;
+                padding: 15px;
+                margin-top: 5px;
                 font-size: 16px;
                 font-weight: 600;
                 color: #2c3e50;
+                min-height: 40px;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 20px;
                 padding: 0 10px 0 10px;
-                background-color: #ffffff;
             }
         """)
         other_layout = QGridLayout(other_group)
-        other_layout.setSpacing(6)
+        other_layout.setSpacing(8)  # 增加间距，避免字体截断
+        other_layout.setVerticalSpacing(10)  # 增加垂直间距
         # 设置列拉伸比例
-        other_layout.setColumnStretch(0, 0)  # 标签列不拉伸
-        other_layout.setColumnStretch(1, 1)    # 值列可拉伸
+        other_layout.setColumnStretch(0, 1)  # 标签列也需要一些空间
+        other_layout.setColumnStretch(1, 2)    # 值列获得更多空间
         
-        other_label_style = "font-weight: 600; color: #7f8c8d; font-size: 14px; background: transparent;"
-        other_value_style = "color: #34495e; font-size: 14px;"
+        other_label_style = "font-weight: 500; color: #7f8c8d; font-size: 14px; padding: 2px 0; min-height: 24px;"
+        other_value_style = "color: #34495e; font-size: 14px; padding: 2px 0; min-height: 20px;"
         
-        other_layout.addWidget(QLabel("价格:"), 0, 0)
-        other_layout.itemAt(other_layout.count() - 1).widget().setStyleSheet(other_label_style)
+        price_label = QLabel("价格:")
+        price_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        price_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        price_label.setStyleSheet(other_label_style)
+        other_layout.addWidget(price_label, 0, 0)
         self.price_label = QLabel("未查询")
         self.price_label.setWordWrap(True)
         self.price_label.setStyleSheet(other_value_style)
         other_layout.addWidget(self.price_label, 0, 1)
         
-        other_layout.addWidget(QLabel("文件大小:"), 1, 0)
-        other_layout.itemAt(other_layout.count() - 1).widget().setStyleSheet(other_label_style)
+        file_size_label = QLabel("文件大小:")
+        file_size_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        file_size_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        file_size_label.setStyleSheet(other_label_style)
+        other_layout.addWidget(file_size_label, 1, 0)
         self.file_size_label = QLabel("未查询")
         self.file_size_label.setWordWrap(True)
         self.file_size_label.setStyleSheet(other_value_style)
         other_layout.addWidget(self.file_size_label, 1, 1)
         
-        other_layout.addWidget(QLabel("分类:"), 2, 0)
-        other_layout.itemAt(other_layout.count() - 1).widget().setStyleSheet(other_label_style)
+        category_label = QLabel("分类:")
+        category_label.setMinimumWidth(80)  # 设置标签最小宽度避免截断
+        category_label.setWordWrap(True)  # 设置自动换行，与值字段保持一致
+        category_label.setStyleSheet(other_label_style)
+        other_layout.addWidget(category_label, 2, 0)
         self.category_label = QLabel("未查询")
         self.category_label.setWordWrap(True)
         self.category_label.setStyleSheet(other_value_style)
@@ -313,6 +344,7 @@ class InfoPanelWidget(QWidget):
     def clear_info(self):
         """清空信息"""
         self.current_app_info = None
+        self.current_icon = None  # 清空保存的图标
         self.app_icon_label.setText("暂无图标")
         self.app_name_label.setText("未查询")
         self.developer_label.setText("未查询")
@@ -372,14 +404,28 @@ class InfoPanelWidget(QWidget):
         try:
             pixmap = load_image_from_url(icon_url)
             if pixmap:
-                # 缩放图标到合适大小
-                scaled_pixmap = pixmap.scaled(90, 90, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                self.app_icon_label.setPixmap(scaled_pixmap)
+                self.current_icon = pixmap  # 保存原始图标
+                self.rescale_icon()  # 根据当前标签大小缩放图标
             else:
                 self.app_icon_label.setText("加载失败")
         except Exception as e:
             print(f"加载图标失败: {e}")
             self.app_icon_label.setText("加载失败")
+    
+    def rescale_icon(self):
+        """重新缩放图标以适应标签大小"""
+        if self.current_icon and not self.current_icon.isNull():
+            # 获取标签当前大小，保持1:1比例缩放图标
+            label_size = self.app_icon_label.size()
+            icon_size = min(label_size.width(), label_size.height()) - 8  # 减去边框和内边距
+            scaled_pixmap = self.current_icon.scaled(icon_size, icon_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.app_icon_label.setPixmap(scaled_pixmap)
+    
+    def resizeEvent(self, event):
+        """处理窗口大小改变事件"""
+        super().resizeEvent(event)
+        # 当标签大小改变时重新缩放图标
+        QTimer.singleShot(0, self.rescale_icon)
     
     def copy_app_info(self):
         """复制应用信息到剪贴板"""

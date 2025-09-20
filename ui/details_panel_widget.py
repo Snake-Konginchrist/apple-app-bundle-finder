@@ -3,12 +3,12 @@
 显示应用描述、更新说明和详细信息
 """
 
-from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QTextEdit, QGroupBox
 )
 
 from models.app_info import AppInfo
+from ui.font_config import FontConfig
 from utils.helpers import format_number
 
 
@@ -25,11 +25,10 @@ class DetailsPanelWidget(QWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
         
-        # 应用描述 - 现代化卡片设计
+        # 应用描述 - 移除背景色，与详细信息保持一致
         desc_group = QGroupBox("应用描述")
         desc_group.setStyleSheet("""
             QGroupBox {
-                background-color: #ffffff;
                 border-radius: 15px;
                 border: 1px solid #e0e0e0;
                 padding: 20px;
@@ -42,7 +41,6 @@ class DetailsPanelWidget(QWidget):
                 subcontrol-origin: margin;
                 left: 20px;
                 padding: 0 10px 0 10px;
-                background-color: #ffffff;
             }
         """)
         desc_layout = QVBoxLayout(desc_group)
@@ -70,11 +68,10 @@ class DetailsPanelWidget(QWidget):
         
         layout.addWidget(desc_group)
         
-        # 更新说明 - 现代化卡片设计
+        # 更新说明 - 移除背景色，与详细信息保持一致
         notes_group = QGroupBox("更新说明")
         notes_group.setStyleSheet("""
             QGroupBox {
-                background-color: #ffffff;
                 border-radius: 15px;
                 border: 1px solid #e0e0e0;
                 padding: 20px;
@@ -87,7 +84,6 @@ class DetailsPanelWidget(QWidget):
                 subcontrol-origin: margin;
                 left: 20px;
                 padding: 0 10px 0 10px;
-                background-color: #ffffff;
             }
         """)
         notes_layout = QVBoxLayout(notes_group)
@@ -138,12 +134,7 @@ class DetailsPanelWidget(QWidget):
         
         self.details_text = QTextEdit()
         self.details_text.setReadOnly(True)
-        # 使用系统默认等宽字体，确保跨平台兼容性
-        font = QFont()
-        font.setStyleHint(QFont.Monospace)
-        font.setFixedPitch(True)
-        font.setPointSize(11)
-        self.details_text.setFont(font)
+        self.details_text.setFont(FontConfig.get_monospace_font())  # 使用统一的等宽字体
         self.details_text.setStyleSheet("""
             QTextEdit {
                 border: 2px solid #e0e0e0;
@@ -153,7 +144,7 @@ class DetailsPanelWidget(QWidget):
                 line-height: 1.6;
                 color: #34495e;
                 background-color: #fafafa;
-                font-family: monospace;
+
             }
             QTextEdit:focus {
                 border-color: #3498db;

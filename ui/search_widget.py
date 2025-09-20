@@ -8,6 +8,8 @@ from PySide6.QtWidgets import (
     QComboBox, QPushButton, QLabel, QProgressBar
 )
 
+from ui.font_config import FontConfig
+
 from utils.helpers import load_country_mapping
 
 
@@ -37,7 +39,8 @@ class SearchWidget(QWidget):
         
         # 应用ID输入 - 现代化样式
         id_label = QLabel("应用ID:")
-        id_label.setStyleSheet("font-weight: 600; color: #2c3e50; font-size: 14px;")
+        id_label.setFont(FontConfig.get_label_font())  # 使用统一的标签字体
+        id_label.setStyleSheet("color: #2c3e50;")
         search_layout.addWidget(id_label)
         
         self.app_id_input = QLineEdit()
@@ -48,7 +51,6 @@ class SearchWidget(QWidget):
                 padding: 12px;
                 border: 2px solid #e0e0e0;
                 border-radius: 8px;
-                font-size: 14px;
                 background-color: #fafafa;
                 color: #2c3e50;
             }
@@ -60,9 +62,10 @@ class SearchWidget(QWidget):
         """)
         search_layout.addWidget(self.app_id_input)
         
-        # 国家选择 - 现代化样式
-        country_label = QLabel("国家:")
-        country_label.setStyleSheet("font-weight: 600; color: #2c3e50; font-size: 14px;")
+        # 国家/地区选择 - 现代化样式
+        country_label = QLabel("国家/地区:")
+        country_label.setFont(FontConfig.get_label_font())  # 使用统一的标签字体
+        country_label.setStyleSheet("color: #2c3e50;")
         search_layout.addWidget(country_label)
         
         self.country_combo = QComboBox()
@@ -71,7 +74,6 @@ class SearchWidget(QWidget):
                 padding: 12px;
                 border: 2px solid #e0e0e0;
                 border-radius: 8px;
-                font-size: 14px;
                 background-color: #fafafa;
                 color: #2c3e50;
                 min-width: 120px;
@@ -118,8 +120,6 @@ class SearchWidget(QWidget):
                 border: none;
                 border-radius: 8px;
                 padding: 12px 20px;
-                font-size: 14px;
-                font-weight: 600;
                 min-width: 100px;
             }
             QPushButton:hover {

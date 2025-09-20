@@ -6,11 +6,15 @@
 """
 
 import webbrowser
+import platform
 
 from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QSplitter, QMessageBox
 )
+
+from ui.font_config import FontConfig
 
 from api.itunes_api import iTunesAPI
 from models.app_info import AppInfo
@@ -49,14 +53,29 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.current_app_info = None
         self.search_worker = None
+        
+        # 设置统一的字体配置
+        FontConfig.setup_application_fonts()
+        
         self.init_ui()
         self.setup_connections()
     
     def init_ui(self):
         """初始化用户界面"""
-        self.setWindowTitle("🍎 Apple应用信息查询工具")
+        self.setWindowTitle("Apple应用信息查询工具")
         self.setMinimumSize(1000, 700)
         self.resize(1200, 800)
+        
+        # 设置应用图标（根据操作系统选择合适格式）
+        system = platform.system()
+        if system == "Darwin":  # macOS
+            icon_path = "assets/logo.icns"
+        elif system == "Windows":  # Windows
+            icon_path = "assets/logo.ico"
+        else:  # Linux 或其他系统
+            icon_path = "assets/logo.png"
+        
+        self.setWindowIcon(QIcon(icon_path))
         
         # 设置状态栏样式（移除窗口背景色）
         self.setStyleSheet("""
