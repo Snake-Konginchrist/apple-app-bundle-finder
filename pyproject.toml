@@ -1,0 +1,38 @@
+[project]
+name = "apple-app-bundle-finder"
+version = "0.1.0"
+description = "Apple App Store应用信息查询工具"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "PySide6>=6.5.0",
+    "requests>=2.31.0"
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["api*", "config*", "models*", "ui*", "utils*"]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "isort"
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+# uv配置
+[tool.uv]
+# 使用清华源
+index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+# 备用源
+extra-index-url = ["https://pypi.org/simple/"]
