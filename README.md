@@ -1,5 +1,7 @@
 # Apple App Bundle Finder
 
+[English](./README_EN.md) | 简体中文
+
 一个基于Python和PySide6的GUI应用，用于查询Apple App Store应用信息。
 
 ## 功能特点
@@ -12,14 +14,14 @@
 ## 安装依赖
 
 ```bash
-pip install -e .
+uv sync
 ```
 
 ## 使用方法
 
 ### 启动应用
 ```bash
-python main.py
+uv run main.py
 ```
 
 ### 使用说明
