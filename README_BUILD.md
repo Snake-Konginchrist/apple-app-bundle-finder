@@ -195,19 +195,19 @@ pyinstaller [选项] main.py
 #### x64 架构（64位）
 ```bash
 # 单文件可执行文件
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" main.py
+pyinstaller --onefile --windowed --target-arch=x64 --name="Apple App Bundle Finder" main.py
 
 # 带图标的版本
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.ico main.py
+pyinstaller --onefile --windowed --target-arch=x64 --name="Apple App Bundle Finder" --icon=assets/logo.ico main.py
 
 # 包含数据文件
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.ico --add-data="assets;assets" --add-data="config;config" main.py
+pyinstaller --onefile --windowed --target-arch=x64 --name="Apple App Bundle Finder" --icon=assets/logo.ico --add-data="assets;assets" --add-data="config;config" main.py
 ```
 
 #### x86 架构（32位）
 ```bash
 # 需要先安装 32位 Python 环境
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.ico main.py
+pyinstaller --onefile --windowed --target-arch=x86 --name="Apple App Bundle Finder" --icon=assets/logo.ico main.py
 ```
 
 ### macOS 平台
@@ -215,20 +215,20 @@ pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/
 #### Intel 芯片（x86_64）
 ```bash
 # 单文件可执行文件
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
+pyinstaller --onefile --windowed --target-arch=x86_64 --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
 
 # 应用包格式（推荐）
-pyinstaller --onedir --windowed --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
+pyinstaller --onedir --windowed --target-arch=x86_64 --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
 ```
 
 #### Apple Silicon（M1/M2 - arm64）
 ```bash
 # 确保使用 arm64 架构的 Python
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
+pyinstaller --onedir --windowed --target-arch=arm64 --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
 
 # 通用二进制（同时支持 Intel 和 Apple Silicon）
 # 需要分别构建两个版本然后合并
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
+pyinstaller --onefile --windowed --target-arch=universal2 --name="Apple App Bundle Finder" --icon=assets/logo.icns main.py
 # 然后使用 lipo 命令合并
 ```
 
@@ -237,16 +237,16 @@ pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --icon=assets/
 #### x86_64 架构
 ```bash
 # 单文件可执行文件
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" main.py
+pyinstaller --onefile --windowed --target-arch=x86_64 --name="Apple App Bundle Finder" main.py
 
 # 包含数据文件
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" --add-data="assets:assets" --add-data="config:config" main.py
+pyinstaller --onefile --windowed --target-arch=x86_64 --name="Apple App Bundle Finder" --add-data="assets:assets" --add-data="config:config" main.py
 ```
 
 #### ARM64 架构
 ```bash
 # 在 ARM64 Linux 系统上
-pyinstaller --onefile --windowed --name="Apple App Bundle Finder" main.py
+pyinstaller --onefile --windowed --target-arch=aarch64 --name="Apple App Bundle Finder" main.py
 ```
 
 ### 跨平台构建注意事项

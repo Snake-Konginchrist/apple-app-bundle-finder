@@ -26,6 +26,41 @@ class BuildManager:
             'linux': LinuxBuilder()
         }
     
+    def build(self, platform: str, installer: bool = False, architecture: str = None, clean: bool = False):
+        """构建指定平台的应用"""
+        if clean:
+            print("🧹 清理构建目录...")
+            self.clean_all()
+            print_separator()
+        
+        if platform not in self.builders:
+            print(f"⚠️  不支持的平台: {platform}")
+            return False
+        
+        print(f"🚀 开始构建 {platform} 平台...")
+        print_separator()
+        
+        try:
+            builder = self.builders[platform]
+            # 设置架构参数
+            if architecture and hasattr(builder, 'set_architecture'):
+                builder.set_architecture(architecture)
+            
+            if installer and hasattr(builder, 'build_installer'):
+                success = builder.build_installer()
+            else:
+                success = builder.build()
+            
+            if success:
+                print(f"✅ {platform} 平台构建成功")
+                return True
+            else:
+                print(f"❌ {platform} 平台构建失败")
+                return False
+        except Exception as e:
+            print(f"❌ {platform} 平台构建失败: {e}")
+            return False
+    
     def run(self, platforms: List[str] = None, clean: bool = False):
         """运行构建过程"""
         print_build_info(self.config)
@@ -51,25 +86,8 @@ class BuildManager:
         # 构建各个平台
         success = True
         for platform in platforms:
-            if platform not in self.builders:
-                print(f"⚠️  不支持的平台: {platform}")
-                continue
-            
-            print(f"🚀 开始构建 {platform} 平台...")
-            print_separator()
-            
-            try:
-                builder = self.builders[platform]
-                if builder.build():
-                    print(f"✅ {platform} 平台构建成功")
-                else:
-                    print(f"❌ {platform} 平台构建失败")
-                    success = False
-            except Exception as e:
-                print(f"❌ {platform} 平台构建失败: {e}")
+            if not self.build(platform, clean=False):
                 success = False
-            
-            print_separator()
         
         # 显示构建结果
         self.show_build_results(platforms)
