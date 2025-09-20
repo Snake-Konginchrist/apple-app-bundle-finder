@@ -58,7 +58,7 @@ AppleAppBundleFinder/
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?ref=Snake-Konginchrist/apple-app-bundle-finder&type=Date)](https://star-history.com/#Snake-Konginchrist/apple-app-bundle-finder&Date)
+[![Star History Chart](https://api.star-history.com/svg?ref=Snake-Konginchrist/apple-app-bundle-finder&type=Date)](https://www.star-history.com/#Snake-Konginchrist/apple-app-bundle-finder&Date)
 
 ## 许可证
 
