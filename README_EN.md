@@ -58,7 +58,7 @@ Uses Apple's official API: `https://itunes.apple.com/lookup`
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?ref=Snake-Konginchrist/apple-app-bundle-finder&type=Date)](https://www.star-history.com/#Snake-Konginchrist/apple-app-bundle-finder&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Snake-Konginchrist/apple-app-bundle-finder&type=Date)](https://www.star-history.com/#Snake-Konginchrist/apple-app-bundle-finder&Date)
 
 ## License
 
